@@ -1,9 +1,12 @@
 Rails.application.routes.draw do
-  get 'static_pages/help'
-
-  get 'static_pages/about'
-
-  get 'static_pages/contact'
+  # Previously, I had 
+  # get 'static_pages/contact'
+  # but this just loads the static page wihtout generating a url path helper, such as help_path
+  get 'help'    => 'static_pages#help'
+  get 'about'   => 'static_pages#about'
+  get 'contact' => 'static_pages#contact'
+  #for example,this generates a signup_path
+  get 'signup' => 'users#new'
 
   root 'static_pages#home'
   # The priority is based upon order of creation: first created -> highest priority.

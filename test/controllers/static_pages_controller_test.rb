@@ -9,13 +9,15 @@ class StaticPagesControllerTest < ActionController::TestCase
  test "should get home" do
     get :home
     assert_response :success
+    # assert_select lets us test for the presence of a particular HTML tag 
     assert_select "title", "#{@base_title}"
   end
 
   test "should get help" do
     get :help
     assert_response :success
-    assert_select "title", "Help | #{@base_title}"
+    #I try something different here, since I included the ApplicationHelper, i can use the full_title method
+    assert_select "title", full_title("Help")
   end
 
   test "should get about" do
