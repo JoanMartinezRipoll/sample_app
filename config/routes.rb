@@ -1,14 +1,20 @@
 Rails.application.routes.draw do
+  get 'sessions/new'
+
   # Previously, I had 
   # get 'static_pages/contact'
   # but this just loads the static page wihtout generating a url path helper, such as help_path
   get 'help'    => 'static_pages#help'
   get 'about'   => 'static_pages#about'
   get 'contact' => 'static_pages#contact'
+  get    'login'   => 'sessions#new'
+  post   'login'   => 'sessions#create'
+  delete 'logout'  => 'sessions#destroy'
   #for example,this generates a signup_path
   get 'signup' => 'users#new'
   #generate all RESTful actions
   resources :users
+
   #define the root page
   root 'static_pages#home'
   # The priority is based upon order of creation: first created -> highest priority.
