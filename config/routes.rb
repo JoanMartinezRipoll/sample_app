@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get 'signup' => 'users#new'
   #generate all RESTful actions
   resources :users
+  resources :account_activations, only: [:edit]
 
   #define the root page
   root 'static_pages#home'

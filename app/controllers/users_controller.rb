@@ -23,10 +23,9 @@ class UsersController < ApplicationController
     #but it would be equivalent to User.new(name: "Foo Bar", email: "foo@invalid", password: "foo", password_confirmation: "bar")
     @user = User.new(user_params)
     if @user.save
-      log_in @user
-      flash[:success] = "Welcome to the Sample App!" #flash displays temporary messages and we can treat it like a hash
-      #success is a convention to indicate a successful result
-      redirect_to @user #equivalent to redirect_to user_url(@user)
+      @user.send_activation_email
+      flash[:info] = "Please check your email to activate your account."
+      redirect_to root_url
     else
       render 'new'
     end

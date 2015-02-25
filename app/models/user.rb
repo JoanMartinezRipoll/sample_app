@@ -1,9 +1,9 @@
 class User < ActiveRecord::Base
   attr_accessor :remember_token, :activation_token
-  
+
   before_save   :downcase_email#This callback is necessary because some db indexes make a difference between upper and donw case and we want all of them to be the same
   before_create :create_activation_digest
-  
+
   validates :name, presence: true, length: { maximum: 50}
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
   #remember, parenthesis are optional
@@ -29,10 +29,10 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, User.digest(remember_token))
   end
 
-  # Returns true if the given token matches the digest.
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")#self.send(:activation_digest) which is activation_digest, which is actually self.read_attribute(:activation_digest)
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
 
   # Forgets a user.
@@ -40,17 +40,26 @@ class User < ActiveRecord::Base
     update_attribute(:remember_digest, nil)
   end
 
-   private
+  def activate
+    update_attribute(:activated,    true)
+    update_attribute(:activated_at, Time.zone.now)
+  end
 
-    # Converts email to all lower-case.
-    def downcase_email
-      debugger
-      self.email = email.downcase
-    end
+  # Sends activation email.
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
+  end
 
-    # Creates and assigns the activation token and digest.
-    def create_activation_digest
-      self.activation_token  = User.new_token
-      self.activation_digest = User.digest(activation_token)
-    end
+  private
+
+  # Converts email to all lower-case.
+  def downcase_email
+    self.email = email.downcase
+  end
+
+  # Creates and assigns the activation token and digest.
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
 end
