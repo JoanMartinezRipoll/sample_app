@@ -21,7 +21,8 @@ class UsersController < ApplicationController
     #fields defined at the form.
     #Writting User.new(params[:user]) would not be save, since one could fake parames such as admin and this would be dangerous
     #but it would be equivalent to User.new(name: "Foo Bar", email: "foo@invalid", password: "foo", password_confirmation: "bar")
-    @user = User.new(user_params)
+   debugger
+   @user = User.new(user_params)
     if @user.save
       @user.send_activation_email
       flash[:info] = "Please check your email to activate your account."
