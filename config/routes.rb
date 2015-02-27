@@ -17,9 +17,15 @@ Rails.application.routes.draw do
   #for example,this generates a signup_path
   get 'signup' => 'users#new'
   #generate all RESTful actions
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
   resources :account_activations, only: [:edit]
   resources :password_resets,     only: [:new, :create, :edit, :update]
+  resources :microposts,          only: [:create, :destroy]
+  resources :relationships,       only: [:create, :destroy]
 
   #define the root page
   root 'static_pages#home'
