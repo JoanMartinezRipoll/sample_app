@@ -77,7 +77,14 @@ class User < ActiveRecord::Base
   end
 
   def feed
-    Micropost.where("user_id = ?", id)
+    #non efficient way, because it pulls all the followed users’ ids into memory, 
+    #and creates an array the full length of the followed users array
+    #Micropost.where("user_id IN (?) OR user_id = ?", following_ids, id)
+    #The efficient way is:
+    following_ids = "SELECT followed_id FROM relationships
+                     WHERE  follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                     OR user_id = :user_id", user_id: id)
   end
 
   # Follows a user.
